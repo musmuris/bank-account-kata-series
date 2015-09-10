@@ -8,6 +8,16 @@ namespace BankingKataTests
     public class AccountAcceptanceTests
     {
         [Test]
+        public void NewAccountHasZeroBalance()
+        {
+            var account = new Account();
+
+            var expected = new Money(0m);
+            var actual = account.CalculateBalance();
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
         public void DepositingCashIncreasesTheAccountBalance()
         {
             var account = new Account();

@@ -5,14 +5,16 @@ namespace BankingKata
     public class Account
     {
         private readonly ILedger _ledger;
+        private readonly IOverdraftLimit _overdraftLimit;
 
-        public Account(ILedger ledger, OverdraftLimit overdraftLimit)
+        public Account(ILedger ledger, IOverdraftLimit overdraftLimit)
         {
             _ledger = ledger;
+            _overdraftLimit = overdraftLimit;
         }
 
         public Account(ILedger ledger)
-            :this(ledger,new OverdraftLimit(new Money(0m)))
+            :this(ledger, new UnlimitedOverdraft())
         {
         }
 
@@ -34,6 +36,7 @@ namespace BankingKata
 
         public void Withdraw(DebitEntry debitEntry)
         {
+            _overdraftLimit.CheckTransactionIsAllowed(CalculateBalance(), debitEntry);
             _ledger.Record(debitEntry);
         }
 
