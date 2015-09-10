@@ -15,7 +15,7 @@ namespace BankingKata
 
     public interface IOverdraftLimit
     {
-        OverdraftState TransactionEffect(Money existingBalance, ITransaction transaction);
+        OverdraftState OverdraftStateForBalance(Money balance);
     }
 
     public class OverdraftLimit : IOverdraftLimit
@@ -29,11 +29,15 @@ namespace BankingKata
             m_SoftOverdraftLimit = softOverdraftLimit;
         }
 
-        public OverdraftState TransactionEffect(Money existingBalance, ITransaction transaction)
+        public OverdraftState OverdraftStateForBalance(Money balance)
         {
-            if (transaction.ApplyTo(existingBalance) < m_HardOverdraftLimit)
+            if (balance < m_HardOverdraftLimit)
             {
                 return OverdraftState.OverHardLimit;
+            }
+            if (balance < m_SoftOverdraftLimit)
+            {
+                return OverdraftState.OverSoftLimit;
             }
             return OverdraftState.WithinLimit;
         }

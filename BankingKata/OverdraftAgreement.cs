@@ -29,7 +29,7 @@ namespace BankingKata
 
         public void CheckTransactionIsAllowed(Money existingBalance, ITransaction transaction)
         {
-            var newState = m_OverdraftLimit.TransactionEffect(existingBalance, transaction);
+            var newState = m_OverdraftLimit.OverdraftStateForBalance(transaction.ApplyTo(existingBalance));
             if (newState == OverdraftState.OverHardLimit)
             {
                 throw new Exception("You can't do that! You'd go too overdrawn!");
@@ -37,6 +37,18 @@ namespace BankingKata
         }
 
         public void ChargeIfOverSoftLimit(Money balance, ILedger ledger)
+        {
+            var state = m_OverdraftLimit.OverdraftStateForBalance(balance);
+            if (state == OverdraftState.OverSoftLimit && m_Charge != null)
+            {
+                ledger.Record(new OverdraftChargeEntry(m_Charge));
+            }
+        }
+    }
+
+    public class OverdraftChargeEntry : DebitEntry
+    {
+        public OverdraftChargeEntry(Money charge) : base(DateTime.Now, charge)
         {
         }
     }
