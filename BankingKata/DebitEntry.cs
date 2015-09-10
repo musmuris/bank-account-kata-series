@@ -28,5 +28,10 @@ namespace BankingKata
         {
             return string.Format("{0} ({1})", _transactionDate.ToString("dd MMM yyyy"), _transactionAmount);
         }
+
+        public override int GetHashCode()
+        {
+            return _transactionDate.GetHashCode() ^ _transactionAmount.GetHashCode();
+        }
     }
 }

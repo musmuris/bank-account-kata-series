@@ -43,5 +43,10 @@ namespace BankingKata
         {
             return @this._amount < other._amount;
         }
+
+        public override int GetHashCode()
+        {
+            return _amount.GetHashCode();
+        }
     }
 }
