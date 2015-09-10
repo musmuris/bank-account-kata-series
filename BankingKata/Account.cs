@@ -6,9 +6,14 @@ namespace BankingKata
     {
         private readonly ILedger _ledger;
 
-        public Account(ILedger ledger)
+        public Account(ILedger ledger, OverdraftLimit overdraftLimit)
         {
             _ledger = ledger;
+        }
+
+        public Account(ILedger ledger)
+            :this(ledger,new OverdraftLimit(new Money(0m)))
+        {
         }
 
         public Account()
