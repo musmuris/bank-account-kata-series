@@ -5,12 +5,12 @@ namespace BankingKata
     public class Account
     {
         private readonly ILedger _ledger;
-        private readonly IOverdraftLimit _overdraftLimit;
+        private readonly IOverdraftAgreement _overdraftAgreement;
 
-        public Account(ILedger ledger, IOverdraftLimit overdraftLimit)
+        public Account(ILedger ledger, IOverdraftAgreement overdraftAgreement)
         {
             _ledger = ledger;
-            _overdraftLimit = overdraftLimit;
+            _overdraftAgreement = overdraftAgreement;
         }
 
         public Account(ILedger ledger)
@@ -36,8 +36,11 @@ namespace BankingKata
 
         public void Withdraw(DebitEntry debitEntry)
         {
-            _overdraftLimit.CheckTransactionIsAllowed(CalculateBalance(), debitEntry);
+            _overdraftAgreement.CheckTransactionIsAllowed(CalculateBalance(), debitEntry);
+
             _ledger.Record(debitEntry);
+
+            _overdraftAgreement.ChargeIfOverSoftLimit(CalculateBalance(), _ledger);
         }
 
         public void PrintBalance(IPrinter printer)
