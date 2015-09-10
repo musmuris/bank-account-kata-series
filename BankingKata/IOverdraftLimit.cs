@@ -21,10 +21,12 @@ namespace BankingKata
     public class OverdraftLimit : IOverdraftLimit
     {
         private readonly Money m_HardOverdraftLimit;
+        private readonly Money m_SoftOverdraftLimit;
 
-        public OverdraftLimit(Money hardOverdraftLimit)
+        public OverdraftLimit(Money hardOverdraftLimit, Money softOverdraftLimit)
         {
             m_HardOverdraftLimit = hardOverdraftLimit;
+            m_SoftOverdraftLimit = softOverdraftLimit;
         }
 
         public OverdraftState TransactionEffect(Money existingBalance, ITransaction transaction)
